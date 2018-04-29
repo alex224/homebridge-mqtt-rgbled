@@ -1,3 +1,8 @@
+// DEBUGGING
+// cd /Users/alex/Dev/NodeJS/homebridge
+// DEBUG=* node debug ./bin/homebridge -D -P ../homebridge-mqtt-rgbled/
+
+
 var Service, Characteristic;
 
 /**
@@ -24,7 +29,14 @@ module.exports = function(homebridge){
 function MQTT_RGB(log, config) {
     //create instance for one stripe to store state
     log("Config: " + config);
+    var me = this;
     this.stripe = require("./mqtt-rgbled-mod")(log, config, function(data) {
+        if (data) {
+            me.lightbulbService.getCharacteristic(Characteristic.On).setValue(data.power, undefined, 'myListener');
+            me.lightbulbService.getCharacteristic(Characteristic.Hue).setValue(data.hue, undefined, 'myListener');
+            me.lightbulbService.getCharacteristic(Characteristic.Saturation).setValue(data.saturation, undefined, 'myListener');
+            me.lightbulbService.getCharacteristic(Characteristic.Brightness).setValue(data.brightness, undefined, 'myListener');
+        }
         log("listerner: state changed " + data)
     });
 
@@ -83,6 +95,8 @@ MQTT_RGB.prototype = {
             .on('get', this.getSaturation.bind(this))
             .on('set', this.setSaturation.bind(this));
 
+        this.lightbulbService = lightbulbService;
+
         return [informationService, lightbulbService];
     },
 
@@ -101,7 +115,10 @@ MQTT_RGB.prototype = {
      * @param state true = on, false = off
      * @param {function} homebridge-callback function(error, result)
      */
-    setPowerState: function(state, callback) {
+    setPowerState: function(state, callback, origin) {
+        if (origin == 'myListener') {
+            callback(undefined, state);
+        }
         var me = this;
         this.log('... setting powerState to ' + state);
         this.stripe.setPowerState(state, function(success) {
@@ -126,6 +143,9 @@ MQTT_RGB.prototype = {
      * @param {function} callback The callback that handles the response.
      */
     setBrightness: function(level, callback) {
+        if (origin == 'myListener') {
+            callback(undefined, state);
+        }
         var me = this;
         this.log('... setting brightness to ' + level);
         this.stripe.setBrightness(level, function(success) {
@@ -150,6 +170,9 @@ MQTT_RGB.prototype = {
      * @param {function} callback The callback that handles the response.
      */
     setHue: function(level, callback) {
+        if (origin == 'myListener') {
+            callback(undefined, state);
+        }
         var me = this;
         this.log('... setting hue to ' + level);
         this.stripe.setHue(level, function(success) {
@@ -174,6 +197,9 @@ MQTT_RGB.prototype = {
      * @param {function} callback The callback that handles the response.
      */
     setSaturation: function(level, callback) {
+        if (origin == 'myListener') {
+            callback(undefined, state);
+        }
         var me = this;
         this.log('... setting saturation to ' + level);
         this.stripe.setSaturation(level, function(success) {

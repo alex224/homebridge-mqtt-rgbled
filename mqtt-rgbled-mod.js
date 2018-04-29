@@ -35,7 +35,7 @@ module.exports = function (log, config, stateChangedListener) {
 			try {
 				var state = JSON.parse(message.toString());
 				if (state) {
-					module.state.brightness = parseInt(state.brightness * 100.0 / 256.0);
+					module.state.brightness = parseInt(state.brightness * 100.0 / 255.0);
 					module.state.power = state.switch;
 					var rgbColor = colors.hexToRgb(state.color);
 					var hsbColor = colors.rgb2hsb(rgbColor);
@@ -87,8 +87,8 @@ module.exports = function (log, config, stateChangedListener) {
 	module.setBrightness = function (value, callback) {
 		var topic = getParam(log, config, 'topics.brightness', true, null);
 		if (topic) {
-			//value is between 0 and 100 -> map to 0 to 256
-			client.publish(topic, clean("" + (value * 256.0 / 100.0).toFixed(0)), null, function(err) {
+			//value is between 0 and 100 -> map to 0 to 255
+			client.publish(topic, clean("" + (value * 255.0 / 100.0).toFixed(0)), null, function(err) {
 				callback(!err);
 			});
 			module.state.brightness = value;
