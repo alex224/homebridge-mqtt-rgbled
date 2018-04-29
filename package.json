@@ -1,0 +1,24 @@
+{
+  "name": "homebridge-mqtt-rgbled",
+  "version": "1.0.0",
+  "description": "MQTT RGB LED Controller plugin for Homebridge (https://github.com/nfarina/homebridge)",
+  "license": "MIT",
+  "keywords": [
+    "homebridge-plugin"
+  ],
+  "engines": {
+    "node": ">=0.12.0",
+    "homebridge": ">=0.2.0"
+  },
+  "author": {
+    "name": "Alexander Heinze"
+  },
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:alex224/homebridge-mqtt-rgbled.git"
+  },
+  "dependencies": {
+    "mqtt": "^2.17.0"
+  }
+}

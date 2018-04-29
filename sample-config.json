@@ -1,0 +1,29 @@
+{
+    "bridge": {
+        "name": "Homebridge",
+        "username": "AA:21:3D:E4:CD:31",
+        "port": 51826,
+        "pin": "777-88-999"
+    },
+
+    "description": "Sample-Configuration",
+
+	"accessories": [
+		{
+			"accessory": "MQTT-RGB-LED",
+			"name": "Bed light",
+
+			"broker" : {
+				"url": "mqtt://docker"
+			},
+
+			"topics" : {
+				"brightness" : "/home/device/esp-bedroom/brightness",
+				"switch" : "/home/device/esp-bedroom/switch",
+				"color" : "/home/device/esp-bedroom/color",
+				"stateRequest" : "/home/device/esp-bedroom/getstate",
+				"stateAnswer" : "/home/device/esp-bedroom/state"
+			}
+		}
+	]
+}
