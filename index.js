@@ -30,6 +30,7 @@ function MQTT_RGB(log, config) {
     //create instance for one stripe to store state
     log("Config: " + config);
     var me = this;
+    
     this.stripe = require("./mqtt-rgbled-mod")(log, config, function(data) {
         if (data) {
             me.lightbulbService.getCharacteristic(Characteristic.On).setValue(data.power, undefined, 'myListener');
@@ -97,6 +98,12 @@ MQTT_RGB.prototype = {
 
         this.lightbulbService = lightbulbService;
 
+        //request current state to start with correct values at startup
+        var me = this;
+        setTimeout(() => {
+            me.getPowerState(function() {}); //only to publish to the getstate topic
+        }, 1000);
+
         return [informationService, lightbulbService];
     },
 
@@ -142,9 +149,9 @@ MQTT_RGB.prototype = {
      * @param {number} level 0-100
      * @param {function} callback The callback that handles the response.
      */
-    setBrightness: function(level, callback) {
+    setBrightness: function(level, callback, origin) {
         if (origin == 'myListener') {
-            callback(undefined, state);
+            callback(undefined, level);
         }
         var me = this;
         this.log('... setting brightness to ' + level);
@@ -169,9 +176,9 @@ MQTT_RGB.prototype = {
      * @param {number} level 0-360
      * @param {function} callback The callback that handles the response.
      */
-    setHue: function(level, callback) {
+    setHue: function(level, callback, origin) {
         if (origin == 'myListener') {
-            callback(undefined, state);
+            callback(undefined, level);
         }
         var me = this;
         this.log('... setting hue to ' + level);
@@ -196,9 +203,9 @@ MQTT_RGB.prototype = {
      * @param {number} level 0-100
      * @param {function} callback The callback that handles the response.
      */
-    setSaturation: function(level, callback) {
+    setSaturation: function(level, callback, origin) {
         if (origin == 'myListener') {
-            callback(undefined, state);
+            callback(undefined, level);
         }
         var me = this;
         this.log('... setting saturation to ' + level);
